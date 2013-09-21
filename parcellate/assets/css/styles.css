@@ -1,9 +1,20 @@
-.container{
-  width:62em;
+.parcel_container{
+  width:200%;
 }
 
-.all_cols>.span3{
+.all_cols .col{
   border:.3em solid black;
+  float:left;
+}
+
+.all_cols .col .page_frame,
+.all_cols .col{
+  min-width:25em;
+  min-height:30em;
+}
+
+.colclear{
+  clear:left;
 }
 
 .restrictect{
