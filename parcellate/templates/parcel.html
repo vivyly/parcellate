@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load parcel_filters %}
+
+{% block content %}
+
+<div class="all_cols row">
+  <div class="span3">
+      <iframe seamless="seamless" src="{{ col1.0|http_prepend }}"></iframe>
+  </div>
+  <div class="span3">
+      <iframe seamless="seamless" src="{{ col2.0|http_prepend }}"></iframe>
+
+  </div>
+  <div class="span3">
+      <iframe seamless="seamless" src="{{ col3.0|http_prepend }}"></iframe>
+  </div>
+</div>
+
+{% endblock content %}

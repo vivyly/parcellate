@@ -1,0 +1,13 @@
+.container{
+  width:62em;
+}
+
+.all_cols>.span3{
+  border:.3em solid black;
+}
+
+.restrictect{
+  overflow-y:hidden;
+}
+
+
