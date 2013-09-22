@@ -3,67 +3,29 @@ import urllib2
 
 from bs4 import BeautifulSoup
 
-class RSSEntry(object):
+class ParcelWindow(object):
     def __init__(self, **kwargs):
-        self.title = kwargs.get('title')
-        self.link = kwargs.get('link')
-        self.id = kwargs.get('id')
-        self.published = kwargs.get('published')
-        self.updated = kwargs.get('updated')
-        self.summary = kwargs.get('summary')
-        self.author_name = kwargs.get('author_name')
-        self.author_uri = kwargs.get('author_uri')
-        self.content = kwargs.get('content')
-        self.meta = kwargs.get('meta')
+        self.parcel_obj = kwargs.get('parcel_obj')
+
+    @property
+    def render(self):
+        return self.parcel_obj.render()
 
 
-class RSSObject(object):
+class ReadRSS(object):
     def __init__(self, **kwargs):
-        self.title = kwargs.get('title')
-        self.link = kwargs.get('link')
-        self.id = kwargs.get('id')
-        self.updated = kwargs.get('updated')
-        self.atom = kwargs.get('atom')
-        self.entries = kwargs.get('entries')
-
-class ParcelBase(object):
-    def __init__(self, **kwargs):
-        self.url = kwargs.get('url')
-        self.render_html = True
-
-class ParcelNoHeader(ParcelBase):
-    name = ''
-
-    def __init__(self, **kwargs):
-        super(ParcelBase, self).__init__(kwargs)
-        self.render_html = False
-        self.html = self.read_url()
+        self.rss = kwargs.get('rss')
+        self.html = self.get_html()
         self.soup = self.set_soup(self.html)
-        self.rss_url = self.find_rss()
-        self.rss = self.handle_rss()
 
-
-    def read_url(self):
-        fstream = urllib2.urlopen(self.url)
-        return fstream.read()
+    def get_html(self):
+        fstream = urllib2.urlopen(self.rss.url)
+        html = fstream.read()
+        fstream.close()
+        return html
 
     def set_soup(self, html):
         return BeautifulSoup(html)
-
-    def find_rss(self, page_name=None):
-        if self.rss_url:
-            return self.rss_url
-        else:
-            if page_name:
-                return 'http://feeds.feedburner.com/%s' %page_name
-            elif self.name
-                return 'http://feeds.feedburner.com/%s' %self.name
-        return ''
-
-    def handle_rss(self):
-        if not self.rss_url:
-            return None
-        rss_data = self.read_url(self.rss_url)
 
 
 
@@ -99,3 +61,4 @@ class ParcelSeriousEats(ParcelNoHeader):
         return ''
 
 class ParcelFactory(object):
+

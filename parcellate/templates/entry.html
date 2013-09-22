@@ -1,0 +1,11 @@
+{% if entry %}
+<div class="entry" id="entry_{{ entry.id }}">
+  <h4 class="entry_title"><a href="{{ entry.url}}">{{ entry.title }}</a></h4>
+  <div class="entry_date">{{ entry.published }}</div>
+  <div class="entry_summary">{% firstof entry.summary entry.desc %}</div>
+  <div class="entry_content">{{ content|safe }}</div>
+  {% if comment %}
+  <div class="entry_comment">{{ comment }}</div>
+  {% endif %}
+</div>
+{% endif %}
