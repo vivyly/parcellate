@@ -26,7 +26,3 @@ class AddRSSForm(forms.Form):
         rss_obj.save()
         return rss_obj
 
-
-#class AddRSSEntryForm(forms.Form):
-
-

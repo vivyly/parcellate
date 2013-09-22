@@ -41,8 +41,7 @@ class SiteObj(BaseObject):
 ##############################################
 
 class RSSObject(BaseObject):
-    atom = models.CharField(max_length=255)
-
+    pass
 
 class RSSEntry(BaseObject):
     rssid = models.CharField(max_length=255)
@@ -98,5 +97,10 @@ class SocialLink(BaseObject):
 
 
 class SocialComments(BaseObject):
-    html = models.TextField(blank=True)
-    sociallink = models.ForeignKey(SocialLink)
+    @property
+    def render(self):
+        fstream = urllib2.urlopen(self.url)
+        html = fstream.read()
+        fstream.close()
+        return html
+
