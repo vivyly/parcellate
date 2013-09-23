@@ -59,5 +59,6 @@ class SimpleTest(TestCase):
     def test_add_rss_entry_lib(self):
         rss_obj = self.create_rss()
         read_rss = ReadRSS(rss=rss_obj)
-        read_rss.save_entries()
+        created = read_rss.save_entries()
+        self.assertEqual(created, 15)
 
