@@ -78,5 +78,4 @@ class ReadRSS(object):
                 continue
         if rss_entry.title:
             rss_entry.save()
-
         return None
