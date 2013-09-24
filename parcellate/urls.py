@@ -9,9 +9,18 @@ from django.conf.urls.static import static
 from django.contrib import admin
 admin.autodiscover()
 
+from parcellate.apps.winparcel.views import (ParcelView,
+                                             RSSObjectCreateView,
+                                             RSSObjectUpdateView,
+                                             #RSSObjectListView,
+                                             RSSObjectDetailView)
+
 urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-    (r'$', 'parcellate.apps.winparcel.views.parcel'),
+    (r'$', ParcelView.as_view()),
     (r'/update$', 'parcellate.apps.winparcel.views.update'),
+    (r'/rss/add$', RSSObjectCreateView.as_view()),
+    (r'/rss/update$', RSSObjectUpdateView.as_view()),
+    (r'/rss/detail$', RSSObjectDetailView.as_view()),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

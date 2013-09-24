@@ -1,14 +1,30 @@
+from django.shortcuts import render
+from django.views.generic import (View,
+                                  CreateView,
+                                  UpdateView,
+                                  DetailView)
+from .models import RSSObject
 
-from django.template import RequestContext
-from django.shortcuts import render_to_response
-from .lib import ParcelFactory
+class ParcelView(View):
+    template_name = "entry.html"
+
+    def get(self, request):
+        rss_objects = RSSObject.objects.all()
+        return render(request,
+                      self.template_name,
+                      dict(rss_objects=rss_objects))
 
 
-def parcel(request):
-    col1 = ['www.google.com','www.bing.com', 'www.freakonomics.com']
-    col2 = ['www.pajiba.com', 'www.reddit.com', 'news.ycombinator.com/news']
-    col3 = ['www.seriouseats.com', 'sf.eater.com']
-    parcel_factory = ParcelFactory(col1, col2, col3)
-    return render_to_response('parcel.html',
-            dict(factory=parcel_factory),
-            context_instance=RequestContext(request))
+
+class RSSObjectCreateView(CreateView):
+    model = RSSObject
+    action = "created"
+
+
+class RSSObjectUpdateView(UpdateView):
+    model = RSSObject
+    action = "updated"
+
+
+class RSSObjectDetailView(DetailView):
+    model = RSSObject
