@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+    {% for obj in object_list %}
+    <div>
+        <div>{{ obj.url }}</div>
+        <div>
+            {% for entry in obj.entries %}
+                {% autoescape off %}
+                {{ entry.render }}
+                {% endautoescape %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div>THIS IS AN ADD FORM</div>
+
+<form action="" method="post">
+  {% csrf_token %}    
+  {{form.as_p}}
+  <input type="submit" name="add" id="add">
+</form>
+{% endblock content %}

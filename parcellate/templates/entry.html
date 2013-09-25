@@ -4,7 +4,9 @@
   <div class="entry_date">{{ entry.published }}</div>
   <div class="entry_summary">{% firstof entry.summary entry.desc %}</div>
   <div class="entry_content{% if comment %} split{% endif %}">
-    {{ content|safe }}
+    {% autoescape off %}
+    {{ content }}
+    {% endautoescape %}
   </div>
   {% if comment %}
   <div class="entry_comment split">

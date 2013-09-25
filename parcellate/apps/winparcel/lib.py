@@ -70,19 +70,27 @@ class ReadRSS(object):
         for tag in taglist.keys():
             try:
                 tmp = entry.find_all(tag)[0]
-                if tag == 'author':
+                if tag == 'author' and tmp:
                     try:
-                        name = tmp.find_all('name')[0]
+                        name = tmp.find_all('name')[0].string
                         setattr(rss_entry, 'author_name', name)
                     except IndexError:
                         pass
                     try:
-                        uri = tmp.find_all('uri')[0]
+                        uri = tmp.find_all('uri')[0].string
                         setattr(rss_entry, 'author_uri', uri)
                     except IndexError:
                         pass
+                elif tag == 'link' and tmp:
+                    try:
+                        link_tag = tmp.find_all('link')[0]
+                        link_href = link_tag.get('href')
+                        setattr(rss_entry, 'url', link_href)
+                    except (IndexError, KeyError):
+                        pass
+
                 else:
-                    setattr(rss_entry, taglist[tag], tmp)
+                    setattr(rss_entry, taglist[tag], tmp.string)
             except IndexError:
                 continue
         if rss_entry.title:

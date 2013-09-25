@@ -41,7 +41,10 @@ class SiteObj(BaseObject):
 ##############################################
 
 class RSSObject(BaseObject):
-    pass
+    @property
+    def entries(self):
+        entries = RSSEntry.objects.filter(rssatom=self)
+        return entries
 
 class RSSEntry(BaseObject):
     rssid = models.CharField(max_length=255)
