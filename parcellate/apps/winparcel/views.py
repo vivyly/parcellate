@@ -44,6 +44,17 @@ class RSSObjectUpdateView(UpdateView):
     model = RSSObject
     template_name = "add_rss.html"
 
+    def get_success_url(self):
+        slug = self.kwargs.get('pk', None)
+        if slug:
+            return reverse('rss-update', kwargs=dict(pk=slug))
+        return reverse("rss-add")
+
+    def get_context_data(self, **kwargs):
+        context = super(RSSObjectUpdateView, self).get_context_data(**kwargs)
+        context["object_list"] = RSSObject.objects.all()
+        return context
+
 
 class RSSObjectDetailView(DetailView):
     model = RSSObject

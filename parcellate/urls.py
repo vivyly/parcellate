@@ -14,13 +14,15 @@ from parcellate.apps.winparcel.views import (ParcelView,
                                              RSSObjectUpdateView,
                                              #RSSObjectListView,
                                              RSSObjectDetailView)
+PRIMARY_KEY = """[\w-]+"""
 
 urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     #url(r'^admin/', include(admin.site.urls)),
     #(r'/update$', 'parcellate.apps.winparcel.views.update'),
     url(r'rss/add$', RSSObjectCreateView.as_view(), name="rss-add"),
-    url(r'rss/update$', RSSObjectUpdateView.as_view(), name="rss-update"),
+    url(r'rss/update/(?P<pk>%s)$' %PRIMARY_KEY,
+        RSSObjectUpdateView.as_view(), name="rss-update"),
     url(r'rss/detail$', RSSObjectDetailView.as_view(), name="rss-detail"),
     url(r'$', ParcelView.as_view(), name="parcel-view"),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
