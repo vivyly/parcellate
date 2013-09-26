@@ -13,23 +13,23 @@ class RSSObjectAddViewTests(TestCase):
         client = Client()
         response = client.get('/rss/add')
         self.assertEquals(
-                list(response.context.get('object_list')),[])
+                list(response.context['object_list']),[])
         RSSObject.objects.create(title='Serious Eats',
                     url='http://feeds.feedburner.com/seriouseats')
         response = client.get('/rss/add')
-        self.assertEquals(response.context.get('object_list').count(), 1)
+        self.assertEquals(response.context['object_list'].count(), 1)
 
     def test_add_rss_in_the_context_request_factory(self):
         factory = RequestFactory()
         request = factory.get('/')
         response = RSSObjectCreateView.as_view()(request)
         self.assertEquals(
-                list(response.context_data.get('object_list')),[])
+                list(response.context_data['object_list']),[])
         RSSObject.objects.create(title='Serious Eats',
                     url='http://feeds.feedburner.com/seriouseats')
         response = RSSObjectCreateView.as_view()(request)
         self.assertEquals(
-                response.context_data.get('object_list').count(), 1)
+                response.context_data['object_list'].count(), 1)
 
 
 class SimpleTest(TestCase):
