@@ -4,24 +4,27 @@
 <form action="" method="post">
   {% csrf_token %}    
   {{form.as_p}}
-  <input type="submit" name="add" id="add">
+  <input class="btn" type="submit" name="add" id="add">
 </form>
 
-<div>THIS IS AN ADD FORM</div>
-
-<div>
-    {% for obj in object_list %}
-    <div>
-        <div>{{ obj.url }}</div>
+{% if object_list %}
+<div class="all_cols">
+    <div class="col">
+        {% for obj in object_list %}
         <div>
-            {% for entry in obj.entries %}
-                {% autoescape off %}
-                {{ entry.render }}
-                {% endautoescape %}
-            {% endfor %}
+            <div>{{ obj.url }}</div>
+            {% if obj.entries %}
+                <div class="rss_entry">
+                    {% for entry in obj.entries_old_to_new|slice:"3" %}
+                        {% autoescape off %}
+                        {{ entry.render }}
+                        {% endautoescape %}
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
-
+{% endif %}
 {% endblock content %}

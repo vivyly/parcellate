@@ -1,0 +1,11 @@
+<div class="widget">
+  <div class="widget_title">{{ rss_object.title }}</div>
+  <div class="widget_edit"><a href="">Edit</a></div>
+  <div class="widget_content">
+    {% for entry in rss_object.entries_old_to_new %}
+      {% autoescape off %}
+      {{ entry.render }}
+      {% endautoescape %}
+    {% endfor %}
+  </div>
+</div>

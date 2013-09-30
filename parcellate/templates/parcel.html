@@ -5,12 +5,17 @@
 <div class="all_cols row">
   {% for key, val in obj_cols.iteritems %}
     {% if val.entries %}
-        <div class="col row-fluid" id="{{ key }}">
-            {% for entry in val.entries %}
-                <div class="rss_entry" id="entry{{ entry.pk }}">
-                    {% autoescape off %}
-                    {{ entry.render }}
-                    {% endautoescape %}
+        <div class="col row-fluid" id="col{{ key }}">
+            {% for entry in val.entries_old_to_new %}
+                <div class="rss_entry" id="rss{{ key }}_{{ val.pk }}_{{ entry.pk }}">
+                    <div class="entry_title">{{ entry.title }}: 
+                        <a href="{{ entry.url }}">Link &raquo;</a>
+                    </div>
+                    <div class="entry_info hidden">
+                        {% autoescape off %}
+                        {{ entry.render }}
+                        {% endautoescape %}
+                    </div>
                 </div>
             {% endfor %}
         </div>

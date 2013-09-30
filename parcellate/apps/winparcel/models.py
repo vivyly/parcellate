@@ -12,9 +12,11 @@ class BaseObject(models.Model):
     url = models.URLField()
     published = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
+    is_deleted = models.BooleanField()
 
     class Meta:
         abstract = True
+
 
 ###############################################
 #
@@ -61,10 +63,33 @@ class SiteObj(BaseObject):
 ##############################################
 
 class RSSObject(BaseObject):
+    #default ordering
+    @property
+    def entries_old_to_new(self):
+        entries = RSSEntry.objects.filter(rssatom=self).order_by('-published')
+        return entries
+
+    #this will only be tied to a switch on the user acct
+    @property
+    def entries_new_to_old(self):
+        entries = RSSEntry.objects.filter(rssatom=self).order_by('published')
+        return entries
+
+    #return boolean: check for existence without incurring cost of
+    # calling every entry
     @property
     def entries(self):
         entries = RSSEntry.objects.filter(rssatom=self)
-        return entries
+        if entries[:1]:
+            return True
+        else:
+            return False
+
+    @property
+    def render(self):
+        return render_to_string('rss_object.html',
+                                dict(rss_object=self))
+
 
 class RSSEntry(BaseObject):
     rssid = models.CharField(max_length=255)
@@ -78,7 +103,7 @@ class RSSEntry(BaseObject):
     @property
     def render(self):
         return render_to_string('entry.html',
-                dict(entry=self, content=self.content))
+                                dict(entry=self))
 
 
 

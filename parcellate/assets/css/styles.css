@@ -15,7 +15,6 @@ body{
 }
 
 .col{
-  border:.3em solid black;
   margin-right:.5em;
   float:left;
   background:#AAA;
@@ -36,6 +35,10 @@ body{
   -moz-border-radius: 1em;
   border-radius: 1em;
   margin-bottom:.5em;
+}
+
+.entry_title{
+  font-weight:bold;
 }
 
 .colclear{

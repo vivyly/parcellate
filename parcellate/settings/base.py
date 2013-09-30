@@ -104,6 +104,12 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+MIDDLEWARE_CLASSES += (
+    'respite.middleware.HttpPutMiddleware',
+    'respite.middleware.HttpPatchMiddleware',
+    'respite.middleware.JsonMiddleware'
+)
+
 ROOT_URLCONF = 'parcellate.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -123,6 +129,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'south',
     'json_field',
+    'respite'
 )
 
 PROJECT_APPS = (

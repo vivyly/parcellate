@@ -15,10 +15,8 @@ class ParcelView(View):
     def get(self, request):
         rss_objects = RSSObject.objects.all()
         obj_cols = dict([(x, []) for x in range(0, COLUMNS)])
-        ct = 0
-        for rss_object in rss_objects:
-            obj_cols[ct] = rss_object
-            ct+=1
+        for idx, rss_object in enumerate(rss_objects):
+            obj_cols[idx] = rss_object
         return render(request,
                       self.template_name,
                       dict(test="TEST",
@@ -39,11 +37,6 @@ class RSSObjectCreateView(CreateView):
 
     def get_success_url(self):
         return reverse("rss-add")
-
-    def get_context_data(self, **kwargs):
-        context = super(RSSObjectCreateView, self).get_context_data(**kwargs)
-        context["object_list"] = RSSObject.objects.all()
-        return context
 
 
 class RSSObjectUpdateView(UpdateView):
