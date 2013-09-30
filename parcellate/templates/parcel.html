@@ -2,26 +2,20 @@
 {% load parcel_filters %}
 
 {% block content %}
-FOO 
-{{ test }}
-BAR
-{{ rss_objects }}
-END
-{% comment %}
 <div class="all_cols row">
-  <div class="col">
-      <iframe class="page_frame" seamless="seamless" src="{{ col1.0|http_prepend }}"></iframe>
-  </div>
-  <div class="col">
-      <iframe class="page_frame" seamless="seamless" src="{{ col2.0|http_prepend }}"></iframe>
-
-  </div>
-  <div class="col">
-      <iframe class="page_frame" seamless="seamless" src="{{ col3.0|http_prepend }}"></iframe>
-  </div>
+  {% for key, val in obj_cols.iteritems %}
+    {% if val.entries %}
+        <div class="col row-fluid" id="{{ key }}">
+            {% for entry in val.entries %}
+                <div class="rss_entry" id="entry{{ entry.pk }}">
+                    {% autoescape off %}
+                    {{ entry.render }}
+                    {% endautoescape %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+  {% endfor %}
   <div class="colclear"></div>
 </div>
-
-{% endcomment %}
-
 {% endblock content %}

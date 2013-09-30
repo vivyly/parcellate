@@ -5,6 +5,7 @@ from django.db import models
 from django.template.loader import render_to_string
 
 from json_field import JSONField
+from bs4 import BeautifulSoup
 
 class BaseObject(models.Model):
     title = models.CharField(max_length=255)
@@ -21,17 +22,36 @@ class BaseObject(models.Model):
 #
 ##############################################
 
+class SiteDomain(BaseObject):
+    content_tag = models.CharField(blank=True, max_length=255)
+    content_attr = models.CharField(blank=True, max_length=255)
+    content_val = models.CharField(blank=True, max_length=255)
+
 class SiteObj(BaseObject):
+    parsed_block = models.TextField(blank=True)
+    domain = models.ForeignKey(SiteDomain)
 
     def resolve_content(self):
-        fstream = urllib2.urlopen(self.url)
-        html = fstream.read()
-        fstream.close()
+        html = ''
+        try:
+            fstream = urllib2.urlopen(self.url)
+            html = fstream.read()
+            fstream.close()
+        except urllib2.URLError:
+            pass
         return html
+
+    def parse_content(self, content):
+        soup = BeautifulSoup(content)
+        params = {self.domain.content_attr: self.domain.content_val}
+        contentblock = soup.find(self.domain.content_tag, **params)
+        return contentblock
 
     @property
     def render(self):
         content = self.resolve_content()
+        if self.domain and self.domain.content_tag:
+            content = self.parse_content(content)
         return render_to_string("site_page.html", dict(site=self, content=content))
 
 ###############################################
@@ -57,7 +77,9 @@ class RSSEntry(BaseObject):
 
     @property
     def render(self):
-        return render_to_string('entry.html', dict(entry=self, content=self.content))
+        return render_to_string('entry.html',
+                dict(entry=self, content=self.content))
+
 
 
 
@@ -100,6 +122,10 @@ class SocialLink(BaseObject):
 
 
 class SocialComments(BaseObject):
+    comment_tag = models.CharField(blank=True, max_length=255)
+    comment_attr = models.CharField(blank=True, max_length=255)
+    comment_val = models.CharField(blank=True, max_length=255)
+
     @property
     def render(self):
         fstream = urllib2.urlopen(self.url)

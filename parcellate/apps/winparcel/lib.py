@@ -19,8 +19,11 @@ TAG_LIST = {
     'published':'published',
     'updated':'updated',
     'summary':'summary',
+    'description':'summary',
     'author':'',
     'content':'content',
+    'pubDat':'published',
+    'guid':'rssid'
 }
 
 class ReadRSS(object):
@@ -53,10 +56,20 @@ class ReadRSS(object):
         if not self.soup:
             return entries_created
         entries = self.soup.find_all('entry')
+        if not entries:
+            entries = self.soup.find_all('item')
+        print entries
         for entry in entries:
             try:
-                rssid = entry.find_all('id')[0]
-                RSSEntry.objects.get(rssid=rssid)
+                rssids = entry.find_all('id')
+                if rssids:
+                    rssid = rssids[0]
+                else:
+                    rssguids = entry.find_all('guid')
+                    if rssguids:
+                        rssid = rssguids[0]
+                if rssid:
+                    RSSEntry.objects.get(rssid=rssid)
             except RSSEntry.DoesNotExist:
                 created = self.create_entry(taglist, entry)
                 if created:
@@ -71,6 +84,7 @@ class ReadRSS(object):
             try:
                 tmp = entry.find_all(tag)[0]
                 if tag == 'author' and tmp:
+                    name, uri = None, None
                     try:
                         name = tmp.find_all('name')[0].string
                         setattr(rss_entry, 'author_name', name)
@@ -81,6 +95,8 @@ class ReadRSS(object):
                         setattr(rss_entry, 'author_uri', uri)
                     except IndexError:
                         pass
+                    if not (name or uri):
+                        setattr(rss_entry, taglist[tag], tmp.string)
                 elif tag == 'link' and tmp:
                     try:
                         link_tag = tmp.find_all('link')[0]

@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
+
+<form action="" method="post">
+  {% csrf_token %}    
+  {{form.as_p}}
+  <input type="submit" name="add" id="add">
+</form>
+
+<div>THIS IS AN ADD FORM</div>
+
 <div>
     {% for obj in object_list %}
     <div>
@@ -15,11 +24,4 @@
     {% endfor %}
 </div>
 
-<div>THIS IS AN ADD FORM</div>
-
-<form action="" method="post">
-  {% csrf_token %}    
-  {{form.as_p}}
-  <input type="submit" name="add" id="add">
-</form>
 {% endblock content %}

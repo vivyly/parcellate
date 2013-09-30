@@ -7,15 +7,22 @@ from django.views.generic import (View,
 from .models import RSSObject
 from .lib import ReadRSS
 
+COLUMNS = 3 #will later be set by a manager, 3 for now though
+
 class ParcelView(View):
     template_name = "parcel.html"
 
     def get(self, request):
         rss_objects = RSSObject.objects.all()
+        obj_cols = dict([(x, []) for x in range(0, COLUMNS)])
+        ct = 0
+        for rss_object in rss_objects:
+            obj_cols[ct] = rss_object
+            ct+=1
         return render(request,
                       self.template_name,
                       dict(test="TEST",
-                           rss_objects=rss_objects)
+                           obj_cols=obj_cols)
                      )
 
 
@@ -29,7 +36,6 @@ class RSSObjectCreateView(CreateView):
         read_rss = ReadRSS(rss=self.object)
         read_rss.save_entries()
         return response
-
 
     def get_success_url(self):
         return reverse("rss-add")

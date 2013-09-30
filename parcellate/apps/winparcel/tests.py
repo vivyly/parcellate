@@ -31,6 +31,28 @@ class RSSObjectAddViewTests(TestCase):
         self.assertEquals(
                 response.context_data['object_list'].count(), 1)
 
+from django.test import LiveServerTestCase
+from selenium.webdriver.firefox.webdriver import WebDriver
+
+class AddRSSIntegrationTests(LiveServerTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.selenium = WebDriver()
+        super(AddRSSIntegrationTests, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.selenium.quit()
+        super(AddRSSIntegrationTests, cls).setUpClass()
+
+    #def test_add_rss(self):
+    #    #add rss
+    #    RSSObject.objects.create(title='Serious Eats',
+    #                             url='http://feeds.feedburner.com/seriouseats')
+    #    self.selenium.get('%s%s' % (self.live_server_url, '/'))
+    #    self.assertEqual(
+    #            self.selenium.find_elements_by_css_selector('.entry')[0].text,)
 
 class SimpleTest(TestCase):
     test_data = dict(
