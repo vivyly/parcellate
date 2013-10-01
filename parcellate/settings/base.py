@@ -104,11 +104,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-MIDDLEWARE_CLASSES += (
-    'respite.middleware.HttpPutMiddleware',
-    'respite.middleware.HttpPatchMiddleware',
-    'respite.middleware.JsonMiddleware'
-)
 
 ROOT_URLCONF = 'parcellate.urls'
 
@@ -129,7 +124,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'south',
     'json_field',
-    'respite'
+    'rest_framework'
 )
 
 PROJECT_APPS = (
