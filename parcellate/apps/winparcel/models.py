@@ -15,12 +15,9 @@ class BaseObject(models.Model):
     title = models.CharField(max_length=255, blank=True, default='')
     published = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(choices=STATUS_CHOICES)
+    status = models.CharField(max_length=255, choices=STATUS_CHOICES)
     column = models.IntegerField(default=0)
     row = models.IntegerField(default=0)
-
-    class Meta:
-        abstract = True
 
 
 ###############################################
@@ -39,25 +36,13 @@ class Tag(models.Model):
 # Collection Object: rss, page, social
 #
 ##############################################
-class CollectionType(object):
-    name = models.CharField()
+class CollectionType(models.Model):
+    name = models.CharField(max_length=255)
 
 
 class Collection(BaseObject):
     collection_type = models.ForeignKey(CollectionType)
     json = JSONField(blank=True, default={})
-
-    def __getattr__(self, name):
-        try:
-            return self.json[name]
-        except KeyError:
-            return None
-
-    def __setattr__(self, name, value):
-        self.json[name] = value
-
-    def __delattr__(self, name):
-        del self.json[name]
 
     #default ordering
     @property
@@ -91,15 +76,16 @@ class Collection(BaseObject):
 # rss, page, social, comments
 #
 ##############################################
-class WidgetType(object):
-    name = models.CharField()
+class WidgetType(models.Model):
+    name = models.CharField(max_length=255)
+
 
 class Widget(BaseObject):
     widget_type = models.ForeignKey(WidgetType)
     collection = models.ForeignKey(Collection)
     srcid = models.CharField(max_length=255, blank=True)
     summary = models.CharField(max_length=255, blank=True, default='')
-    content = models.TextField(blank=True, default='')
+    content = models.TextField(blank=True, null=True, default='')
 
     @property
     def render(self):
