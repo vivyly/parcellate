@@ -36,16 +36,15 @@ class Tag(models.Model):
 
 ###############################################
 #
-# Collection Object
+# Collection Object: rss, page, social
 #
 ##############################################
+class CollectionType(object):
+    name = models.CharField()
+
+
 class Collection(BaseObject):
-    COLLECTION_TYPES = [[x, x] for x in ['rss',
-                                         'page',
-                                         'social'
-                                        ]]
-    collection_type = models.CharField(
-                        choices=COLLECTION_TYPES)
+    collection_type = models.ForeignKey(CollectionType)
     json = JSONField(blank=True, default={})
 
     def __getattr__(self, name):
@@ -82,23 +81,21 @@ class Collection(BaseObject):
         else:
             return False
 
-    #@property
-    #def render(self):
-    #    return render_to_string('rss_object.html',
-    #                            dict(rss_object=self))
+    def render(self):
+        return render_to_string('collection.html',
+                                dict(collection=self))
 
 ###############################################
 #
 # Widget Objects (i.e. any random link)
+# rss, page, social, comments
 #
 ##############################################
+class WidgetType(object):
+    name = models.CharField()
+
 class Widget(BaseObject):
-    WIDGET_TYPES = [[x, x] for x in ['rss',
-                                     'page',
-                                     'social',
-                                     'comments'
-                                    ]]
-    widget_type = models.CharField(choices=WIDGET_TYPES)
+    widget_type = models.ForeignKey(WidgetType)
     collection = models.ForeignKey(Collection)
     srcid = models.CharField(max_length=255, blank=True)
     summary = models.CharField(max_length=255, blank=True, default='')
@@ -106,6 +103,6 @@ class Widget(BaseObject):
 
     @property
     def render(self):
-        return render_to_string('entry.html',
-                                dict(entry=self))
+        return render_to_string('widget.html',
+                                dict(widget=self))
 
