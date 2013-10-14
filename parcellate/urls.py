@@ -21,11 +21,11 @@ SLUG = '''[a-zA-Z0-9_\-]+'''
 urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^api/widget/(?P<slug>%s)/$' %SLUG, WidgetDetailView.as_view(),
+    url(r'^api/widget/(?P<uuid>%s)/$' %SLUG, WidgetDetailView.as_view(),
                                                 name="widget-detail"),
-    url(r'^api/widgets/(?P<slug>%s)/$' %SLUG, WidgetListView.as_view(),
+    url(r'^api/widgets/(?P<uuid>%s)/$' %SLUG, WidgetListView.as_view(),
                                                 name="widget-list"),
-    url(r'api/collection/(?P<slug>%s)/$' %SLUG, CollectionDetailView.as_view(),
+    url(r'api/collection/(?P<uuid>%s)/$' %SLUG, CollectionDetailView.as_view(),
                                                 name="collection-detail"),
     url(r'^', CollectionListView.as_view(), name="collection-list"),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -2,5 +2,8 @@
 {% block content %}
 <div class="row_fluid contentBox">
   {{ object_list }}
+  {% for obj in object_list %}
+  {{ obj.uuid }}
+  {% endfor %}
 </div>
 {% endblock content %}

@@ -5,12 +5,13 @@ from .models import Collection, Widget
 class CollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Collection
-        fields = ('url', 'pk', 'uuid', 'title', 'summary', 'published',
-                  'updated', 'content', 'column', 'row')
+        fields = ('url', 'uuid', 'title',  'published',
+                  'updated', 'column', 'row', 'collection_type')
 
 
 class WidgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Widget
-        fields = ('url', 'pk', 'uuid', 'title', 'published',
-                  'updated', 'column', 'row')
+        fields = ('url', 'uuid', 'title', 'published',
+                  'updated', 'column', 'row', 'widget_type', 'collection',
+                  'srcid', 'summary', 'content')

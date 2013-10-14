@@ -12,31 +12,36 @@ class CollectionListView(generic.ListView):
 
 
 class WidgetListView(generics.ListAPIView):
+    model = Widget
     serializer_class = WidgetSerializer
     def get_queryset(self):
-        slug = self.kwargs.get('slug')
-        if slug:
+        uuid = self.kwargs.get('uuid')
+        if uuid:
             try:
-                collection = Collection.objects.get(uuid=slug)
-                return collection.widgets
+                collection = Collection.objects.get(uuid=uuid)
+                return collection.widgets_old_to_new
             except Collection.DoesNotExist:
                 pass
         return Collection.objects.none()
 
 class WidgetDetailView(generics.RetrieveAPIView):
+    model = Widget
     serializer_class = WidgetSerializer
+    lookup_field = 'uuid'
     def get_queryset(self):
-        slug = self.kwargs.get('slug')
-        if slug:
-            return Widget.objects.filter(uuid=slug)
+        uuid = self.kwargs.get('uuid')
+        if uuid:
+            return Widget.objects.filter(uuid=uuid)
         return Widget.objects.none()
 
 class CollectionDetailView(generics.RetrieveAPIView):
+    model = Collection
     serializer_class = CollectionSerializer
+    lookup_field = 'uuid'
     def get_queryset(self):
-        slug = self.kwargs.get('slug')
-        if slug:
-            return Collection.objects.filter(uuid=slug)
+        uuid = self.kwargs.get('uuid')
+        if uuid:
+            return Collection.objects.filter(uuid=uuid)
         return Collection.objects.none()
 
 

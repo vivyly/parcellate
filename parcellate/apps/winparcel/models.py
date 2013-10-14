@@ -53,18 +53,18 @@ class Collection(BaseObject):
 
     #default ordering
     @property
-    def entries_old_to_new(self):
-        return Widget.objects.filter(rssatom=self).order_by('-published')
+    def widgets_old_to_new(self):
+        return Widget.objects.filter(collection=self).order_by('-published')
 
     #this will only be tied to a switch on the user acct
     @property
-    def entries_new_to_old(self):
-        return Widget.objects.filter(rssatom=self).order_by('published')
+    def widgets_new_to_old(self):
+        return Widget.objects.filter(collection=self).order_by('published')
 
     #return boolean: check for existence without incurring cost of
     # calling every entry
     @property
-    def entries(self):
+    def widgets(self):
         entries = Widget.objects.filter(rssatom=self)
         if entries[:1]:
             return True
