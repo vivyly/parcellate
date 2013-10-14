@@ -4,6 +4,8 @@ from django.template.loader import render_to_string
 from shortuuidfield import ShortUUIDField
 from json_field import JSONField
 
+from .lib import ReadRSS
+
 
 class BaseObject(models.Model):
     STATUS_CHOICES = [[x, x] for x in ['active',
@@ -39,22 +41,25 @@ class Tag(models.Model):
 class CollectionType(models.Model):
     name = models.CharField(max_length=255)
 
+    def __unicode__(self):
+        return u'<CollectionType: %s >' % self.name
 
 class Collection(BaseObject):
     collection_type = models.ForeignKey(CollectionType)
     json = JSONField(blank=True, default={})
 
+    def __unicode__(self):
+        return u'<Collection: %s >' % self.title
+
     #default ordering
     @property
     def entries_old_to_new(self):
-        entries = Widget.objects.filter(rssatom=self).order_by('-published')
-        return entries
+        return Widget.objects.filter(rssatom=self).order_by('-published')
 
     #this will only be tied to a switch on the user acct
     @property
     def entries_new_to_old(self):
-        entries = Widget.objects.filter(rssatom=self).order_by('published')
-        return entries
+        return Widget.objects.filter(rssatom=self).order_by('published')
 
     #return boolean: check for existence without incurring cost of
     # calling every entry
@@ -79,6 +84,8 @@ class Collection(BaseObject):
 class WidgetType(models.Model):
     name = models.CharField(max_length=255)
 
+    def __unicode__(self):
+        return u'<WidgetType: %s >' % self.name
 
 class Widget(BaseObject):
     widget_type = models.ForeignKey(WidgetType)
@@ -86,6 +93,9 @@ class Widget(BaseObject):
     srcid = models.CharField(max_length=255, blank=True)
     summary = models.CharField(max_length=255, blank=True, default='')
     content = models.TextField(blank=True, null=True, default='')
+
+    def __unicode__(self):
+        return u'<Widget: %s >' % self.title
 
     @property
     def render(self):

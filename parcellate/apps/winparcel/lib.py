@@ -3,7 +3,6 @@ from urlparse import urlparse
 
 from bs4 import BeautifulSoup
 
-from .models import Collection, CollectionType, Widget, WidgetType
 
 TAG_LIST = {
     'title':'title',
@@ -19,15 +18,15 @@ TAG_LIST = {
 }
 
 class ReadBase(object):
-    def __init__(self, **kwargs):
-        self.url = kwargs.get('url', None)
+    def __init__(self, url, collection_type, widget_type):
+        self.url = url
         self.html = None
         self.soup = None
         self.collection = None
         self.collection_title = ''
-        cname = kwargs.get('collection_type')
+        cname = collection_type
         self.collection_type = self.create_collection_type(cname)
-        wname = kwargs.get('widget_type')
+        wname = widget_type
         self.widget_type = self.create_widget_type(wname)
         if self.url:
             self.html = self.get_html()
@@ -47,12 +46,13 @@ class ReadBase(object):
         urlpath = urlparse(self.url)
         if urlpath.netloc == 'feeds.feedburner.com':
             self.collection_title = self.soup.find('title')
-            domain_url = self.soup.find('link')
+            domain_url = self.soup.find('link').string
         else:
             domain_url = 'http://%s' % urlpath.netloc
         return domain_url
 
     def get_domain_object(self):
+        from .models import Collection
         domain_url = self.find_domain_url()
         try:
             c = Collection.objects.get(url=domain_url)
@@ -61,18 +61,21 @@ class ReadBase(object):
         return c
 
     def create_collection_type(self, name):
+        from .models import CollectionType
         ctype = CollectionType()
         ctype.name = name
         ctype.save()
         return ctype
 
     def create_widget_type(self, name):
+        from .models import WidgetType
         wtype = WidgetType()
         wtype.name = name
         wtype.save()
         return wtype
 
     def create_collection(self, domain_url):
+        from .models import Collection
         ctype = self.create_collection_type(self.collection_type)
         c = Collection()
         c.url = domain_url
@@ -83,12 +86,22 @@ class ReadBase(object):
         return c
 
 class ReadRSS(ReadBase):
-    def __init__(self, **kwargs):
-        kwargs['collection_type'] = 'rss'
-        kwargs['widget_type'] = 'rss'
-        super(ReadRSS, self).__init__(**kwargs)
+    def __init__(self, url):
+        from .models import Collection, WidgetType
+        if isinstance(url, str):
+            super(ReadRSS, self).__init__(url, 'rss', 'rss')
+        elif isinstance(url, Collection):
+            collection = url
+            self.url = collection.url
+            self.html = self.get_html()
+            self.soup = self.set_soup(self.html)
+            self.collection = collection
+            self.collection_type = collection.collection_type
+            self.widget_type = WidgetType.objects.get(name='rss')
+
 
     def save_entries(self):
+        from .models import Widget
         taglist = TAG_LIST
         entries_created = 0
         if not self.soup:
@@ -116,6 +129,7 @@ class ReadRSS(ReadBase):
         return entries_created
 
     def create_entry(self, taglist, entry):
+        from .models import Widget
         rss_entry = Widget()
         for tag in taglist.keys():
             try:
@@ -133,6 +147,9 @@ class ReadRSS(ReadBase):
             except IndexError:
                 continue
         if rss_entry.title:
+            if not rss_entry.url:
+                rss_entry.url = rss_entry.srcid
+            rss_entry.status = 'active'
             rss_entry.collection = self.collection
             rss_entry.widget_type = self.widget_type
             rss_entry.save()
@@ -147,6 +164,7 @@ class ReadPage(ReadBase):
         super(ReadPage, self).__init__(**kwargs)
 
     def create_widget(self, content):
+        from .models import Widget
         try:
             w = Widget.objects.get(url=self.url)
         except Widget.DoesNotExist:
@@ -182,6 +200,7 @@ class ReadPage(ReadBase):
 
 class ReadSocial(ReadBase):
     def get_domain_object(self):
+        from .models import Collection
         try:
             c = Collection.objects.get(url=self.url)
         except Collection.DoesNotExist:

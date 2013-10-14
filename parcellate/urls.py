@@ -5,25 +5,27 @@ from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 
+from parcellate.apps.winparcel.views import (CollectionListView,
+                                             WidgetListView,
+                                             WidgetDetailView,
+                                             CollectionDetailView,
+                                             )
+
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
-from parcellate.apps.winparcel.views import (ParcelView,
-                                             RSSObjectCreateView,
-                                             RSSObjectUpdateView,
-                                             #RSSObjectListView,
-                                             RSSObjectDetailView)
-PRIMARY_KEY = """[\w-]+"""
+SLUG = '''[a-zA-Z0-9_\-]+'''
+
 
 urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
-    #url(r'^admin/', include(admin.site.urls)),
-    #(r'/update$', 'parcellate.apps.winparcel.views.update'),
-    url(r'^', include('apps.winparcel.urls')),
-    url(r'rss/add$', RSSObjectCreateView.as_view(), name="rss-add"),
-    url(r'rss/update/(?P<pk>%s)$' %PRIMARY_KEY,
-        RSSObjectUpdateView.as_view(), name="rss-update"),
-    url(r'rss/detail$', RSSObjectDetailView.as_view(), name="rss-detail"),
-    url(r'$', ParcelView.as_view(), name="parcel-view"),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^api/widget/(?P<slug>%s)/$' %SLUG, WidgetDetailView.as_view(),
+                                                name="widget-detail"),
+    url(r'^api/widgets/(?P<slug>%s)/$' %SLUG, WidgetListView.as_view(),
+                                                name="widget-list"),
+    url(r'api/collection/(?P<slug>%s)/$' %SLUG, CollectionDetailView.as_view(),
+                                                name="collection-detail"),
+    url(r'^', CollectionListView.as_view(), name="collection-list"),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
