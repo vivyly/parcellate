@@ -22,19 +22,19 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(1 + 1, 2)
 
 class AddReadTest(unittest.TestCase):
-    def test_read_rss(self):
+    def read_rss(self):
         pajiba = ReadRSS(url="http://feeds.feedburner.com/pajiba")
-        pajiba.save_entries()
+        entries = pajiba.parse_entries()
         seriouseats = ReadRSS(url="http://feeds.feedburner.com/seriouseats")
-        seriouseats.save_entries()
+        entries = seriouseats.parse_entries()
         eatersf = ReadRSS(url="http://feeds.feedburner.com/eatersf")
-        eatersf.save_entries()
+        entries = eatersf.parse_entries()
 
     def test_read_page(self):
         pajiba_page = ReadPage(url="http://www.pajiba.com/trailers/let-benedict-cumberbatchs-narration-in-the-new-hobbit-trailer-desolate-you.php")
-        pajiba_page.save_page()
+        print pajiba_page.find_content()
         se_page = ReadPage(url="http://sweets.seriouseats.com/2013/10/ways-to-use-apple-cider.html")
-        se_page.save_page()
+        print se_page.find_content()
 
 
 

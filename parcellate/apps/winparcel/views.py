@@ -4,11 +4,19 @@ from rest_framework import (generics)
 
 from .models import Collection, Widget
 from .serializers import WidgetSerializer, CollectionSerializer
+from .lib import ReadRSS
 
 class CollectionListView(generic.ListView):
     template_name = "collection_list.html"
     def get_queryset(self):
         return Collection.objects.all().order_by('column')
+
+
+class CollectionCreateView(generics.CreateAPIView):
+    def post_save(self, obj, created=False):
+        if created:
+            reader = ReadRSS(obj)
+            reader.save_entries()
 
 
 class WidgetListView(generics.ListAPIView):
@@ -33,6 +41,11 @@ class WidgetDetailView(generics.RetrieveAPIView):
         if uuid:
             return Widget.objects.filter(uuid=uuid)
         return Widget.objects.none()
+
+
+class WidgetDestroyView(generics.DestroyAPIView):
+    pass
+
 
 class CollectionDetailView(generics.RetrieveAPIView):
     model = Collection
